@@ -17,12 +17,8 @@ if __name__ == '__main__':
     detector = Detector(yolo_model=YOLO_MODEL, media_dir=MEDIA_DIR, image_name=TEST_IMAGE, boxes_file_path=BOXES_PATH)
     camera = RaspiCamera(MEDIA_DIR, 10)
     bot = TelegramBot(camera=camera, detector=detector)
-    
-    bot_thread = threading.Thread(target=bot.run)
     camera_thread = threading.Thread(target=camera.run)
-    
-    bot_thread.start()
     camera_thread.start()
-    
-    bot_thread.join()
     camera_thread.join()
+    
+    bot.run()
