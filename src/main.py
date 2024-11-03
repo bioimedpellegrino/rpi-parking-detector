@@ -13,9 +13,7 @@ TEST_IMAGE = 'test_park.jpg'
 BOXES_PATH = os.path.join(MEDIA_DIR, 'boxes.txt')
 
 if __name__ == '__main__':
-    detector = Detector(YOLO_MODEL, BASE_DIR, MEDIA_DIR, TEST_IMAGE, BOXES_PATH)
-    bot = TelegramBot(detector)
-    raspi_camera = RaspiCamera(MEDIA_DIR, 10)
-    while True:
-        bot.run()
-        raspi_camera.run()
+    detector = Detector(yolo_model=YOLO_MODEL, media_dir=MEDIA_DIR, image_name=TEST_IMAGE, boxes_file_path=BOXES_PATH)
+    camera = RaspiCamera(MEDIA_DIR, 10)
+    bot = TelegramBot(camera=camera, detector=detector)
+    bot.run()

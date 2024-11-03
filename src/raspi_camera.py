@@ -29,7 +29,7 @@ class RaspiCamera:
         sleep(1)
         self.camera.capture_file(snapshot_path)
         self.deactivate()
-
+        print("Raspi camera: snapshot taken")
         return snapshot_path
     
     def idle(self):
@@ -37,6 +37,5 @@ class RaspiCamera:
         
     def run(self):
         self.take_snapshot()
-        print("Raspi camera: snapshot taken")
         self.idle()
         
