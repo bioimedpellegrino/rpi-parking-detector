@@ -66,7 +66,27 @@ class TelegramBot:
     
     def check_free_spot(self, update: Update, context: CallbackContext) -> None:
         
-        pass
+        if not self.is_camera_active:
+            update.message.reply_text('La camera non è inizializzata. Per inizializzara invia: /activate_camera')
+            return
+
+        chat_id = update.effective_chat.id
+
+        self.detector.detect()
+        self.detector.check_free_spot()
+        free_boxes = self.detector.free_boxes
+        if free_boxes:
+            update.message.reply_text(f"Posti liberi: {free_boxes}")
+        else:
+            update.message.reply_text("Nessun posto libero")
+        
+        file_path = self.detector.situation_path
+        update.message.reply_text("Ecco a te zio, questa è la situazione attuale del parcheggio:")
+        try:
+            with open(file_path, 'rb') as file:
+                context.bot.send_document(chat_id=chat_id, document=file)
+        except FileNotFoundError:
+            update.message.reply_text('File non trovato.')
     
     def activate_camera(self, update: Update, context: CallbackContext) -> None:
         try:
@@ -98,8 +118,8 @@ class TelegramBot:
         
         attach_path = self.camera.take_snapshot()
         attach_path = attach_path if attach_path else "image.jpg"
-        file_path = os.path.join('..', 'media', attach_path)
-        update.message.reply_text("Ecco a te zio")
+        file_path = os.path.join(self.base_dir, 'media', attach_path)
+        update.message.reply_text("Ecco a te zio, questa è la situazione attuale del parcheggio:")
         try:
             with open(file_path, 'rb') as file:
                 context.bot.send_document(chat_id=chat_id, document=file)

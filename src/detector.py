@@ -1,6 +1,6 @@
 import os
-import time
 import json
+import cv2
 
 from ultralytics import YOLO
 
@@ -14,6 +14,7 @@ class Detector:
         self.boxes_to_monitor = []
         self.cars_center_points = []
         self.free_boxes = {}
+        self.situation_path = None
         if boxes_file_path and os.path.exists(boxes_file_path):
             with open(boxes_file_path, 'r') as json_file:
                 self.boxes_to_monitor = json.load(json_file)
@@ -47,3 +48,25 @@ class Detector:
                     break
             else:
                 self.free_boxes[box['id']] = (box["start_point"], box["end_point"])
+        
+        self.draw_and_save_boxes()
+                
+    def draw_and_save_boxes(self):
+
+        image_path = os.path.join(self.media_dir, self.image_name)
+        output_path = os.path.join(self.media_dir, "situation.jpg")
+
+        image = cv2.imread(image_path)
+        
+        color_free = (0, 255, 0)
+        color_occupied = (0, 0, 255)
+
+        for box in self.boxes_to_monitor:
+            start_point = tuple(box["start_point"])
+            end_point = tuple(box["end_point"])
+            color = color_occupied if box['is_occupied'] else color_free
+            cv2.rectangle(image, start_point, end_point, color, 2)  # 2 è lo spessore della linea
+
+        cv2.imwrite(output_path, image)
+
+        self.situation_path =  output_path
