@@ -25,6 +25,7 @@ class TelegramBot:
         self.dispatcher.add_handler(CommandHandler("snap", self.send_snapshot))
         self.dispatcher.add_handler(CommandHandler("send", self.send_attachment))
         self.dispatcher.add_handler(CommandHandler("check", self.check_free_spot))
+        self.dispatcher.add_handler(CommandHandler("detect", self.detect))
         self.dispatcher.add_handler(CommandHandler("activate_camera", self.activate_camera))
         self.dispatcher.add_handler(CommandHandler("deactivate_camera", self.deactivate_camera))
         self.dispatcher.add_handler(CommandHandler("register", self.register))
@@ -64,6 +65,22 @@ class TelegramBot:
         except FileNotFoundError:
             update.message.reply_text('File non trovato.')
     
+    def detect(self, update: Update, context: CallbackContext) -> None:
+        
+        if not self.is_camera_active:
+            update.message.reply_text('La camera non è inizializzata. Per inizializzara invia: /activate_camera')
+            return
+        
+        chat_id = update.effective_chat.id
+
+        file_path = self.detector.detection_path
+        update.message.reply_text("Ecco a te zio, questa è la classificazione che ho fatto:")
+        try:
+            with open(file_path, 'rb') as file:
+                context.bot.send_document(chat_id=chat_id, document=file)
+        except FileNotFoundError:
+            update.message.reply_text('File non trovato.')
+        
     def check_free_spot(self, update: Update, context: CallbackContext) -> None:
         
         if not self.is_camera_active:
