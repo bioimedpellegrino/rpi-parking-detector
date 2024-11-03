@@ -6,14 +6,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.getenv("BASE_DIR")
+CONFIG_DIR = "config"
 MEDIA_DIR = "media"
-TEST_IMAGE = "test_park.jpg"
+TEST_IMAGE = "parking.jpg"
 
 drawing = False
 start_point = None
 indx = 0
 boxes = []
-boxes_path = os.path.join(BASE_DIR, "media", "boxes.txt")
+boxes_path = os.path.join(BASE_DIR, CONFIG_DIR, "boxes.txt")
 
 def draw_rectangle(event, x, y, flags, param):
     global drawing, start_point, boxes, indx

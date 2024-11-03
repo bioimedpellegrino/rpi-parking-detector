@@ -127,7 +127,6 @@ class TelegramBot:
             update.message.reply_text('File non trovato.')
 
     def run(self):
+        print("Bot started")
         self.updater.start_polling()
         self.updater.idle()
-        print("Bot started")
-        
