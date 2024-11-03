@@ -23,12 +23,8 @@ class RaspiCamera:
     def take_snapshot(self) -> str:
         snapshot_name = 'parking.jpg'
         snapshot_path = os.path.join(self.media_dir, snapshot_name)
-
-        self.activate()
-        self.camera.start()
         sleep(1)
         self.camera.capture_file(snapshot_path)
-        self.deactivate()
         print("Raspi camera: snapshot taken")
         return snapshot_path
     
@@ -36,6 +32,7 @@ class RaspiCamera:
         sleep(self.sleep_seconds)
         
     def run(self):
+        self.activate()
         while True:
             self.take_snapshot()
             self.idle()
