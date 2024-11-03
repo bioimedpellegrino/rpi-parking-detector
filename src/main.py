@@ -19,6 +19,5 @@ if __name__ == '__main__':
     bot = TelegramBot(camera=camera, detector=detector)
     camera_thread = threading.Thread(target=camera.run)
     camera_thread.start()
-    camera_thread.join()
     
     bot.run()

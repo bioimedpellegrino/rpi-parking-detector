@@ -79,5 +79,5 @@ class TelegramBot:
     def run(self):
         self.updater.start_polling()
         self.updater.idle()
-        self.camera.take_snapshot()
+        print("Bot started")
         
