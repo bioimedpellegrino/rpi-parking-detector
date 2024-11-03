@@ -49,6 +49,6 @@ while True:
 with open(boxes_path, 'w') as json_file:
     json.dump(boxes, json_file)
 
-print("Boxes saved to media/boxes.txt")
+print("Boxes saved to config/boxes.txt")
 
 cv2.destroyAllWindows()
