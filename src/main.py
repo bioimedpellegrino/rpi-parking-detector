@@ -17,7 +17,8 @@ if __name__ == '__main__':
     detector = Detector(yolo_model=YOLO_MODEL, media_dir=MEDIA_DIR, image_name=TEST_IMAGE, boxes_file_path=BOXES_PATH)
     camera = RaspiCamera(MEDIA_DIR, 10)
     bot = TelegramBot(camera=camera, detector=detector)
+    # Run the camera thread in a different thread --> this will take the snapshot every 10 seconds of the parking lot
     camera_thread = threading.Thread(target=camera.run)
     camera_thread.start()
-    
+    # Run the bot in the main thread (necessary because idle only works in the main thread)
     bot.run()
