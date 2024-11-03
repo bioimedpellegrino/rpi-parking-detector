@@ -57,7 +57,7 @@ class TelegramBot:
     
     def send_attachment(self, update: Update, context: CallbackContext) -> None:
         chat_id = update.effective_chat.id
-        file_path = os.path.join('..', 'media', 'image.jpg')
+        file_path = os.path.join(self.base_dir, 'media', 'image.jpg')
         try:
             with open(file_path, 'rb') as file:
                 context.bot.send_document(chat_id=chat_id, document=file)
@@ -76,7 +76,7 @@ class TelegramBot:
         self.detector.check_free_spot()
         free_boxes = self.detector.free_boxes
         if free_boxes:
-            update.message.reply_text(f"Posti liberi: {free_boxes}")
+            update.message.reply_text(f"Posti liberi: {len(free_boxes)}")
         else:
             update.message.reply_text("Nessun posto libero")
         
