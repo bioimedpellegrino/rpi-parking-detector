@@ -4,16 +4,19 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
+from raspi_camera import RaspiCamera
 from detector import Detector
 
 load_dotenv()
 
 class TelegramBot:
-    def __init__(self):
+    def __init__(self, camera: RaspiCamera, detector: Detector):
         self.token = os.getenv("TELEGRAM_BOT_TOKEN") 
         self.updater = Updater(self.token)
         self.dispatcher = self.updater.dispatcher
         self.is_camera_active = False
+        self.camera = camera
+        self.detector = detector
         self.add_handlers()
 
     def add_handlers(self):
@@ -37,7 +40,7 @@ class TelegramBot:
     
     def activate_camera(self, update: Update, context: CallbackContext) -> None:
         try:
-            self.detector = Detector()
+            self.camera.activate()
             self.is_camera_active = True
             update.message.reply_text('Camera operativa')
         except Exception as e:
@@ -47,7 +50,7 @@ class TelegramBot:
         
     def deactivate_camera(self, update: Update, context: CallbackContext) -> None:
         try:
-            self.detector.close()
+            self.camera.deactivate()
             self.is_camera_active = False
             update.message.reply_text('Camera spenta')
         except Exception as e:
@@ -63,7 +66,7 @@ class TelegramBot:
             
         chat_id = update.effective_chat.id
         
-        attach_path = self.detector.take_snapshot()
+        attach_path = self.camera.take_snapshot()
         attach_path = attach_path if attach_path else "image.jpg"
         file_path = os.path.join('..', 'media', attach_path)
         update.message.reply_text("Ecco a te zio")
@@ -76,7 +79,3 @@ class TelegramBot:
     def run(self):
         self.updater.start_polling()
         self.updater.idle()
-
-if __name__ == '__main__':
-    bot = TelegramBot()
-    bot.run()

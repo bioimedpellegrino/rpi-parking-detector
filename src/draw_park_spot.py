@@ -1,15 +1,22 @@
 import cv2
 import json
-import numpy as np
+import os
 
-# Variabili globali per gestire il disegno dei rettangoli
+from dotenv import load_dotenv
+load_dotenv()
+
+BASE_DIR = os.getenv("BASE_DIR")
+MEDIA_DIR = "media"
+TEST_IMAGE = "test_park.jpg"
+
 drawing = False
 start_point = None
-rectangles = []  # Lista dei rettangoli
+indx = 0
+boxes = []
+boxes_path = os.path.join(BASE_DIR, "media", "boxes.txt")
 
-# Funzione di callback per il mouse
 def draw_rectangle(event, x, y, flags, param):
-    global drawing, start_point, rectangles
+    global drawing, start_point, boxes, indx
     
     if event == cv2.EVENT_LBUTTONDOWN:
         drawing = True
@@ -23,28 +30,25 @@ def draw_rectangle(event, x, y, flags, param):
 
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
+        indx += 1
         end_point = (x, y)
-        rectangles.append((start_point, end_point))  # Aggiungi il rettangolo alla lista
+        boxes.append({"id": indx, "start_point": start_point, "end_point": end_point, "is_occupied": False})
         cv2.rectangle(frame, start_point, end_point, (255, 0, 0), 2)
 
-# Leggi l'immagine
-image_path = '../media/test_park.jpg'  # Sostituisci con il percorso della tua immagine
+image_path = os.path.join(BASE_DIR, MEDIA_DIR, TEST_IMAGE)
 frame = cv2.imread(image_path)
 
-# Crea una finestra e imposta la funzione di callback del mouse
 cv2.namedWindow('Draw Parking Boxes')
 cv2.setMouseCallback('Draw Parking Boxes', draw_rectangle)
 
-# Mostra l'immagine e aspetta l'input
 while True:
     cv2.imshow('Draw Parking Boxes', frame)
-    if cv2.waitKey(1) & 0xFF == 27:  # Esci premendo 'Esc'
+    if cv2.waitKey(1) & 0xFF == 27: # ESC
         break
 
-# Salva i rettangoli in un file JSON
-with open('rectangles.json', 'w') as json_file:
-    json.dump(rectangles, json_file)
+with open(boxes_path, 'w') as json_file:
+    json.dump(boxes, json_file)
 
-print(f"Rectangles saved to rectangles.json: {rectangles}")
+print("Boxes saved to media/boxes.txt")
 
 cv2.destroyAllWindows()
