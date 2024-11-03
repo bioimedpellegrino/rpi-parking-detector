@@ -163,5 +163,8 @@ cython_debug/
 
 #
 config/*
+!config/.gitkeep
 media/*
+!media/.gitkeep
 models/*
+!models/.gitkeep
