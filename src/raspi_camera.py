@@ -36,6 +36,7 @@ class RaspiCamera:
         sleep(self.sleep_seconds)
         
     def run(self):
-        self.take_snapshot()
-        self.idle()
+        while True:
+            self.take_snapshot()
+            self.idle()
         
