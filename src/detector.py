@@ -32,12 +32,13 @@ class Detector:
         for result in results:
             for detected in result.boxes:
                 label = int(detected.cls[0])
-                if label == 2:  # La label delle "auto" secondo COCO
+                if label == 2 or label == 3:  # 2 per "auto" e 3 per "camion" secondo COCO
                     x1, y1, x2, y2 = map(int, detected.xyxy[0])
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     center_point = (center_x, center_y)
                     self.cars_center_points.append(center_point)
+                    print(detected)
                     
     def check_free_spot(self):
         for box in self.boxes_to_monitor:
