@@ -3,6 +3,9 @@ import time
 from picamera2 import Picamera2
 from datetime import datetime
 
+from ultralytics import YOLO
+model=YOLO('yolov8n.pt')
+
 class Detector:
     def __init__(self):
         self.camera = Picamera2()
