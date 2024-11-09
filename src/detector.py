@@ -3,7 +3,7 @@ import json
 import cv2
 
 from ultralytics import YOLO
-
+from utils import get_coco_labels
 
 class Detector:
     
@@ -16,6 +16,7 @@ class Detector:
         self.free_boxes = {}
         self.situation_path = None
         self.detection_path = None
+        self.label_map = get_coco_labels()
         if boxes_file_path and os.path.exists(boxes_file_path):
             with open(boxes_file_path, 'r') as json_file:
                 self.boxes_to_monitor = json.load(json_file)
@@ -36,22 +37,21 @@ class Detector:
 
         for result in results:
             for detected in result.boxes:
-                label = int(detected.cls[0])
-                if label == 2 or label == 3:  # 2 per "auto" e 3 per "camion" secondo COCO
+                class_number = int(detected.cls[0])
+                label = self.label_map[class_number]
+                if label in ['car', 'truck', 'motorcycle']:
                     x1, y1, x2, y2 = map(int, detected.xyxy[0])
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     center_point = (center_x, center_y)
                     self.cars_center_points.append(center_point)
 
-                    vehicle_type = "Auto" if label == 2 else "Camion"
-                    print(f"{vehicle_type} rilevato: {detected.xyxy[0]} con coordinate: ({x1}, {y1}), ({x2}, {y2})")
-                    
-                    color = (0, 255, 0) if label == 2 else (0, 0, 255)
-                    cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
+                print(f"{label} rilevato: {detected.xyxy[0]} con coordinate: ({x1}, {y1}), ({x2}, {y2})")
+                
+                color = (0, 255, 0) if label in ['car', 'truck', 'motorcycle'] else (0, 0, 255)
+                cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
 
-                    vehicle_type = "Auto" if label == 2 else "Camion"
-                    cv2.putText(image, vehicle_type, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                cv2.putText(image, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
         output_path = os.path.join(self.media_dir, "detection.jpg")
         cv2.imwrite(output_path, image)
