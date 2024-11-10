@@ -40,8 +40,8 @@ class Detector:
             for detected in result.boxes:
                 class_number = int(detected.cls[0])
                 label = self.label_map[class_number]
+                x1, y1, x2, y2 = map(int, detected.xyxy[0])
                 if label in ['car', 'truck', 'motorcycle']:
-                    x1, y1, x2, y2 = map(int, detected.xyxy[0])
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     center_point = (center_x, center_y)

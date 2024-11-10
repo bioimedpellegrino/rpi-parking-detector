@@ -1,0 +1,13 @@
+[Unit]
+Description=Park Detector Service
+After=network.target
+
+[Service]
+ExecStart=/home/pi/park-detector/run.sh
+Restart=always
+RestartSec=5
+User=pi
+WorkingDirectory=/home/pi/park-detector
+
+[Install]
+WantedBy=multi-user.target

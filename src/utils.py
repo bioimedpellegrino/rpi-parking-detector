@@ -1,7 +1,7 @@
 import logging
 import os
 
-def setup_logging(log_path):
+def setup_logging(log_path='parking-detector.log'):
     logging.basicConfig(
         level=logging.INFO,
         format='[%(asctime)s] %(levelname)s - %(message)s',

@@ -5,7 +5,7 @@ from picamera2 import Picamera2
 from time import sleep
 
 class RaspiCamera:
-    def __init__(self, media_dir: str, sleep_seconds: int, main: dict = {"size": (1920, 1080)}, lores: dict = {'size': (640, 480)}, display: str = 'lores', buffer_count: int = 3):
+    def __init__(self, media_dir: str, sleep_seconds: int, main: dict = {"size": (640, 640)}, lores: dict = {'size': (640, 480)}, display: str = 'lores', buffer_count: int = 3):
         self.camera = Picamera2()
         config = self.camera.create_still_configuration(main=main, lores=lores, display=display, buffer_count=buffer_count)
         self.camera.configure(config)
