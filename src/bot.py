@@ -1,9 +1,9 @@
 import os
-from dotenv import load_dotenv
+import logging
 
+from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
-
 from raspi_camera import RaspiCamera
 from detector import Detector
 
@@ -111,7 +111,7 @@ class TelegramBot:
             self.is_camera_active = True
             update.message.reply_text('Camera operativa')
         except Exception as e:
-            print(e)
+            logging.error(e)
             update.message.reply_text('Inizializzazione della camera fallita')
             
         
@@ -121,7 +121,7 @@ class TelegramBot:
             self.is_camera_active = False
             update.message.reply_text('Camera spenta')
         except Exception as e:
-            print(e)
+            logging(e)
             update.message.reply_text('Spegnimento della camera fallito. Riavviare...')
         
             
@@ -144,6 +144,6 @@ class TelegramBot:
             update.message.reply_text('File non trovato.')
 
     def run(self):
-        print("Bot started")
+        logging.info("BOT AVVIATO")
         self.updater.start_polling()
         self.updater.idle()

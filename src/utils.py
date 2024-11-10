@@ -1,4 +1,14 @@
+import logging
+import os
 
+def setup_logging(log_path):
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(asctime)s] %(levelname)s - %(message)s',
+        filename=log_path,
+        filemode='w'
+)
+    
 def get_coco_labels():
     
     return {

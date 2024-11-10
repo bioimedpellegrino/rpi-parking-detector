@@ -5,6 +5,7 @@ from detector import Detector
 from bot import TelegramBot
 from raspi_camera import RaspiCamera
 from dotenv import load_dotenv
+from utils import setup_logging
 load_dotenv()
 
 YOLO_MODEL = os.getenv('YOLO_MODEL')
@@ -13,8 +14,10 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 CONFIG_DIR = os.path.join(BASE_DIR, 'config')
 IMAGE_NAME = 'parking.jpg'
 BOXES_PATH = os.path.join(CONFIG_DIR, 'boxes.txt')
+LOG_PATH = os.getenv('LOG_PATH')
 
 if __name__ == '__main__':
+    setup_logging(LOG_PATH)
     detector = Detector(yolo_model=YOLO_MODEL, media_dir=MEDIA_DIR, image_name=IMAGE_NAME, boxes_file_path=BOXES_PATH)
     camera = RaspiCamera(MEDIA_DIR, 10)
     bot = TelegramBot(camera=camera, detector=detector, base_dir=BASE_DIR)

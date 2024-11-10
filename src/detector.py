@@ -1,6 +1,7 @@
 import os
 import json
 import cv2
+import logging 
 
 from ultralytics import YOLO
 from utils import get_coco_labels
@@ -45,8 +46,8 @@ class Detector:
                     center_y = (y1 + y2) // 2
                     center_point = (center_x, center_y)
                     self.cars_center_points.append(center_point)
-
-                print(f"{label} rilevato: {detected.xyxy[0]} con coordinate: ({x1}, {y1}), ({x2}, {y2})")
+                
+                logging.info(f"{label} rilevato: {detected.xyxy[0]} con coordinate: ({x1}, {y1}), ({x2}, {y2})")
                 
                 color = (0, 255, 0) if label in ['car', 'truck', 'motorcycle'] else (0, 0, 255)
                 cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
